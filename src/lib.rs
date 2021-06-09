@@ -48,6 +48,20 @@ impl Universe {
         }
         count
     }
+
+    /// Get the dead and alive values of the entire universe.
+    pub fn get_cells(&self) -> &FixedBitSet {
+        &self.cells
+    }
+
+    /// Set cells to be alive in a universe by passing the row and column
+    /// of each cell as an array.
+    pub fn set_cells(&mut self, cells: &[(u32, u32)]) {
+        for (row, col) in cells.iter().cloned() {
+            let idx = self.get_index(row, col);
+            self.cells.set(idx, true);
+        }
+    }
 }
 
 #[wasm_bindgen]
@@ -61,13 +75,16 @@ impl Universe {
                 let cell = self.cells[idx];
                 let live_neighbors = self.live_neighbor_count(row, col);
 
-                next.set(idx, match (cell, live_neighbors) {
-                    (true, x) if x < 2 => false,
-                    (true, 2) | (true, 3) => true,
-                    (true, x) if x > 3 => false,
-                    (false, 3) => true,
-                    (otherwise, _) => otherwise
-                });
+                next.set(
+                    idx,
+                    match (cell, live_neighbors) {
+                        (true, x) if x < 2 => false,
+                        (true, 2) | (true, 3) => true,
+                        (true, x) if x > 3 => false,
+                        (false, 3) => true,
+                        (otherwise, _) => otherwise,
+                    },
+                );
             }
         }
 
@@ -137,6 +154,26 @@ impl Universe {
 
     pub fn cells(&self) -> *const u32 {
         self.cells.as_slice().as_ptr()
+    }
+
+    /// Set the width of the universe.
+    ///
+    /// Resets all cells to the dead state.
+    pub fn set_width(&mut self, width: u32) {
+        self.width = width;
+        for i in 0..width * self.height {
+            self.cells.set(i as usize, false);
+        }
+    }
+
+    /// Set the height of the universe.
+    ///
+    /// Resets all cells to the dead state.
+    pub fn set_height(&mut self, height: u32) {
+        self.height = height;
+        for i in 0..self.width * height {
+            self.cells.set(i as usize, false);
+        }
     }
 }
 
