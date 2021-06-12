@@ -3,9 +3,7 @@ mod utils;
 use js_sys::Math::random;
 use std::fmt;
 use wasm_bindgen::prelude::*;
-extern crate fixedbitset;
 use fixedbitset::FixedBitSet;
-extern crate web_sys;
 use web_sys::console;
 
 pub struct Timer<'a> {
@@ -26,6 +24,7 @@ impl<'a> Drop for Timer<'a> {
 }
 
 // A macro to provide `println!(..)`-style syntax for `console.log` logging.
+#[allow(unused_macros)]
 macro_rules! log {
     ( $( $t:tt )* ) => {
         web_sys::console::log_1(&format!( $( $t )* ).into());
