@@ -170,14 +170,25 @@ impl Universe {
         self.cells.as_slice().as_ptr()
     }
 
+    pub fn resize(&mut self, length: u32) {
+        let size = (length * length) as usize;
+        let cells = FixedBitSet::with_capacity(size);
+        self.cells = cells;
+        self.set_height(length);
+        self.set_width(length);
+    }
+
+    pub fn reset(&mut self) {
+        for i in 0..(self.width * self.height) {
+            self.cells.set(i as usize, false);
+        }
+    }
+
     /// Set the width of the universe.
     ///
     /// Resets all cells to the dead state.
     pub fn set_width(&mut self, width: u32) {
         self.width = width;
-        for i in 0..width * self.height {
-            self.cells.set(i as usize, false);
-        }
     }
 
     /// Set the height of the universe.
@@ -185,9 +196,6 @@ impl Universe {
     /// Resets all cells to the dead state.
     pub fn set_height(&mut self, height: u32) {
         self.height = height;
-        for i in 0..self.width * height {
-            self.cells.set(i as usize, false);
-        }
     }
 
     pub fn toggle_cell(&mut self, row: u32, column: u32) {
