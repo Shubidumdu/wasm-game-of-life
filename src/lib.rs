@@ -1,9 +1,9 @@
 mod utils;
 
+use fixedbitset::FixedBitSet;
 use js_sys::Math::random;
 use std::fmt;
 use wasm_bindgen::prelude::*;
-use fixedbitset::FixedBitSet;
 use web_sys::console;
 
 pub struct Timer<'a> {
@@ -126,33 +126,6 @@ impl Universe {
         let size = (width * height) as usize;
         let mut cells = FixedBitSet::with_capacity(size);
 
-        // Only single space ship
-        // let cells = (0..width * height)
-        //     .map(|i| {
-        //         if i == (0 * width + 0)
-        //             || i == (0 * width + 2)
-        //             || i == (1 * width + 1)
-        //             || i == (1 * width + 2)
-        //             || i == (2 * width + 1)
-        //         {
-        //             Cell::Alive
-        //         } else {
-        //             Cell::Dead
-        //         }
-        //     })
-        //     .collect();
-
-        // Random generation
-        // let cells = (0..width * height)
-        //     .map(|_| {
-        //         if random() < 0.5 {
-        //             Cell::Alive
-        //         } else {
-        //             Cell::Dead
-        //         }
-        //     })
-        //     .collect();
-
         for i in 0..size {
             if random() < 0.5 {
                 cells.set(i, true);
@@ -166,6 +139,19 @@ impl Universe {
             height,
             cells,
         }
+    }
+
+    pub fn random(&mut self) {
+        let size = (self.width * self.height) as usize;
+        let mut cells = FixedBitSet::with_capacity(size);
+        for i in 0..size {
+            if random() < 0.5 {
+                cells.set(i, true);
+            } else {
+                cells.set(i, false);
+            }
+        }
+        self.cells = cells;
     }
 
     pub fn render(&self) -> String {
