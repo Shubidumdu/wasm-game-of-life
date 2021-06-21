@@ -23,7 +23,6 @@ impl<'a> Drop for Timer<'a> {
     }
 }
 
-// A macro to provide `println!(..)`-style syntax for `console.log` logging.
 #[allow(unused_macros)]
 macro_rules! log {
     ( $( $t:tt )* ) => {
@@ -31,8 +30,6 @@ macro_rules! log {
     }
 }
 
-// When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
-// allocator.
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
@@ -74,13 +71,10 @@ impl Universe {
         count
     }
 
-    /// Get the dead and alive values of the entire universe.
     pub fn get_cells(&self) -> &FixedBitSet {
         &self.cells
     }
 
-    /// Set cells to be alive in a universe by passing the row and column
-    /// of each cell as an array.
     pub fn set_cells(&mut self, cells: &[(u32, u32)]) {
         for (row, col) in cells.iter().cloned() {
             let idx = self.get_index(row, col);
@@ -124,15 +118,7 @@ impl Universe {
         let height = 64;
 
         let size = (width * height) as usize;
-        let mut cells = FixedBitSet::with_capacity(size);
-
-        for i in 0..size {
-            if random() < 0.5 {
-                cells.set(i, true);
-            } else {
-                cells.set(i, false);
-            }
-        }
+        let cells = FixedBitSet::with_capacity(size);
 
         Universe {
             width,
@@ -184,16 +170,10 @@ impl Universe {
         }
     }
 
-    /// Set the width of the universe.
-    ///
-    /// Resets all cells to the dead state.
     pub fn set_width(&mut self, width: u32) {
         self.width = width;
     }
 
-    /// Set the height of the universe.
-    ///
-    /// Resets all cells to the dead state.
     pub fn set_height(&mut self, height: u32) {
         self.height = height;
     }
@@ -213,7 +193,6 @@ impl fmt::Display for Universe {
             }
             write!(f, "\n")?;
         }
-
         Ok(())
     }
 }
