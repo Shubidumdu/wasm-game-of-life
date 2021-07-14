@@ -78,15 +78,6 @@ impl Universe {
     pub fn get_cells(&self) -> &FixedBitSet {
         &self.cells
     }
-
-    /// Set cells to be alive in a universe by passing the row and column
-    /// of each cell as an array.
-    pub fn set_cells(&mut self, cells: &[(u32, u32)]) {
-        for (row, col) in cells.iter().cloned() {
-            let idx = self.get_index(row, col);
-            self.cells.set(idx, true);
-        }
-    }
 }
 
 #[wasm_bindgen]
